@@ -10,7 +10,11 @@
     "check": "node scripts/check-content.mjs",
     "build": "node scripts/check-content.mjs && astro build && pagefind --site dist && node scripts/emit-aliases.mjs",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "new:writing": "node scripts/new.mjs writing",
+    "new:note": "node scripts/new.mjs notes",
+    "new:guide": "node scripts/new.mjs guides",
+    "new:project": "node scripts/new.mjs projects"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.3",
