@@ -1,0 +1,33 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { TopicSlug } from '../config/topics';
+import BaseLayout from './BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import TopicChip from '../components/TopicChip.astro';
+import MaturityBadge from '../components/MaturityBadge.astro';
+import CopyLinkButton from '../components/CopyLinkButton.astro';
+import RelatedSection from '../components/RelatedSection.astro';
+
+interface Props {
+  entry: CollectionEntry<'notes'>;
+}
+const { entry } = Astro.props;
+const topics = (entry.data.topics ?? []) as TopicSlug[];
+---
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <header class="note-header">
+    <div class="article-meta">
+      {entry.data.maturity && <MaturityBadge level={entry.data.maturity} />}
+      <FormattedDate date={entry.data.pubDate} format="short" />
+      <CopyLinkButton />
+    </div>
+    <h1>{entry.data.title}</h1>
+    {topics.length > 0 && (
+      <div class="topic-chips">
+        {topics.map((t) => <TopicChip topic={t} />)}
+      </div>
+    )}
+  </header>
+  <article class="prose"><slot /></article>
+  <RelatedSection refs={entry.data.related} />
+</BaseLayout>

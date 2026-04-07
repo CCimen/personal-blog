@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { TopicSlug } from '../config/topics';
+import BaseLayout from './BaseLayout.astro';
+import TopicChip from '../components/TopicChip.astro';
+import RelatedSection from '../components/RelatedSection.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+const { entry } = Astro.props;
+const topics = (entry.data.topics ?? []) as TopicSlug[];
+const statusLabels: Record<CollectionEntry<'projects'>['data']['status'], string> = {
+  'in-progress': 'In progress',
+  shipped: 'Shipped',
+  archived: 'Archived',
+};
+---
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <header class="project-header">
+    <h1>{entry.data.title}</h1>
+    <p class="article-lede">{entry.data.description}</p>
+    <div class="project-meta">
+      <span class="status-badge" data-status={entry.data.status}>
+        {statusLabels[entry.data.status]}
+      </span>
+      <span>{entry.data.year}</span>
+    </div>
+    {entry.data.stack.length > 0 && (
+      <div class="stack-chips">
+        {entry.data.stack.map((tech) => <span>{tech}</span>)}
+      </div>
+    )}
+    {(entry.data.repo || entry.data.link) && (
+      <div class="project-links">
+        {entry.data.repo && (
+          <a href={entry.data.repo} rel="noopener" target="_blank">Repo →</a>
+        )}
+        {entry.data.link && (
+          <a href={entry.data.link} rel="noopener" target="_blank">Live →</a>
+        )}
+      </div>
+    )}
+    {topics.length > 0 && (
+      <div class="topic-chips">
+        {topics.map((t) => <TopicChip topic={t} />)}
+      </div>
+    )}
+  </header>
+  <article class="prose"><slot /></article>
+  <RelatedSection refs={entry.data.related} />
+</BaseLayout>
