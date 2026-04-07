@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { TopicSlug } from '../config/topics';
+import { entryHref } from '../lib/collections';
+import TopicChip from './TopicChip.astro';
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+const { entry } = Astro.props;
+const topics = (entry.data.topics ?? []) as TopicSlug[];
+const statusLabels: Record<CollectionEntry<'projects'>['data']['status'], string> = {
+  'in-progress': 'In progress',
+  shipped: 'Shipped',
+  archived: 'Archived',
+};
+---
+<a class="card" href={entryHref(entry)}>
+  <h3>{entry.data.title}</h3>
+  <p>{entry.data.description}</p>
+  <div class="card-meta">
+    <span>{entry.data.year}</span>
+    <span class="status-badge" data-status={entry.data.status}>
+      {statusLabels[entry.data.status]}
+    </span>
+  </div>
+  {topics.length > 0 && (
+    <div class="topic-chips">
+      {topics.map((t) => <TopicChip topic={t} />)}
+    </div>
+  )}
+</a>

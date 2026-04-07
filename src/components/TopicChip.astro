@@ -1,0 +1,9 @@
+---
+import { TOPICS, type TopicSlug } from '../config/topics';
+interface Props {
+  topic: TopicSlug;
+}
+const { topic } = Astro.props;
+const label = TOPICS[topic].label;
+---
+<a class="topic-chip" href={`/topics/${topic}/`}>{label}</a>

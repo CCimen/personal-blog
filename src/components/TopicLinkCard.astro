@@ -1,0 +1,12 @@
+---
+import { TOPICS, type TopicSlug } from '../config/topics';
+interface Props {
+  topic: TopicSlug;
+}
+const { topic } = Astro.props;
+const { label, description } = TOPICS[topic];
+---
+<a class="topic-link-card" href={`/topics/${topic}/`}>
+  <h3>{label}</h3>
+  <p>{description}</p>
+</a>

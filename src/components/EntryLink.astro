@@ -1,0 +1,20 @@
+---
+import { getContentManifest } from '../lib/manifest';
+import { entryHref } from '../lib/collections';
+
+interface Props {
+  /** Canonical reference in the form `collection/slug` */
+  id: string;
+}
+const { id } = Astro.props;
+const manifest = await getContentManifest();
+const entry = manifest.byKey.get(id);
+if (!entry) {
+  throw new Error(
+    `EntryLink: no content entry found for "${id}". ` +
+      `Expected a key of the form "collection/slug" that resolves to a published entry.`,
+  );
+}
+const href = entryHref(entry);
+---
+<a href={href}>{entry.data.title}</a>

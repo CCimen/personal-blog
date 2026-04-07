@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { TopicSlug } from '../config/topics';
+import { entryHref } from '../lib/collections';
+import FormattedDate from './FormattedDate.astro';
+import TopicChip from './TopicChip.astro';
+import MaturityBadge from './MaturityBadge.astro';
+
+interface Props {
+  entry: CollectionEntry<'notes'>;
+}
+const { entry } = Astro.props;
+const topics = (entry.data.topics ?? []) as TopicSlug[];
+---
+<a class="card" href={entryHref(entry)}>
+  <div class="card-meta">
+    <FormattedDate date={entry.data.pubDate} format="short" />
+    {entry.data.maturity && <MaturityBadge level={entry.data.maturity} />}
+  </div>
+  <h3>{entry.data.title}</h3>
+  <p>{entry.data.description}</p>
+  {topics.length > 0 && (
+    <div class="topic-chips">
+      {topics.map((t) => <TopicChip topic={t} />)}
+    </div>
+  )}
+</a>

@@ -1,0 +1,15 @@
+---
+interface Props {
+  date: Date;
+  format?: 'full' | 'short' | 'year';
+}
+const { date, format = 'full' } = Astro.props;
+const iso = date.toISOString();
+const pretty =
+  format === 'year'
+    ? String(date.getUTCFullYear())
+    : format === 'short'
+    ? date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
+    : date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+<time datetime={iso}>{pretty}</time>

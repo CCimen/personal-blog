@@ -1,0 +1,15 @@
+---
+interface Props {
+  level: 'seed' | 'growing' | 'stable' | 'archived';
+}
+const { level } = Astro.props;
+const labels: Record<Props['level'], string> = {
+  seed: 'Seed',
+  growing: 'Growing',
+  stable: 'Stable',
+  archived: 'Archived',
+};
+---
+<span class="maturity-badge" data-level={level} title={`Maturity: ${labels[level]}`}>
+  {labels[level]}
+</span>

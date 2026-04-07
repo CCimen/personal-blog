@@ -1,0 +1,37 @@
+---
+import { resolveRelated } from '../lib/related';
+import type { CollectionEntry } from 'astro:content';
+import PostCard from './PostCard.astro';
+import NoteCard from './NoteCard.astro';
+import GuideCard from './GuideCard.astro';
+import ProjectCard from './ProjectCard.astro';
+
+interface Props {
+  refs: string[];
+}
+const { refs } = Astro.props;
+const entries = refs && refs.length > 0 ? await resolveRelated(refs) : [];
+---
+{entries.length > 0 && (
+  <aside class="related-section">
+    <h2>Related</h2>
+    <ul class="related-list">
+      {entries.map((entry) => (
+        <li>
+          {entry.collection === 'writing' && (
+            <PostCard entry={entry as CollectionEntry<'writing'>} />
+          )}
+          {entry.collection === 'notes' && (
+            <NoteCard entry={entry as CollectionEntry<'notes'>} />
+          )}
+          {entry.collection === 'guides' && (
+            <GuideCard entry={entry as CollectionEntry<'guides'>} />
+          )}
+          {entry.collection === 'projects' && (
+            <ProjectCard entry={entry as CollectionEntry<'projects'>} />
+          )}
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}

@@ -1,0 +1,18 @@
+---
+interface Props { title: string; description: string; image?: string; }
+const { title, description, image = '/og-default.png' } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(image, Astro.site)} />
+<meta property="og:url" content={canonical} />
+<meta property="og:type" content="website" />
+<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+<script src="/pagefind/pagefind-ui.js" is:inline></script>

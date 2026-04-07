@@ -1,0 +1,38 @@
+---
+---
+<dialog id="search-dialog" aria-label="Search">
+  <div id="search-pagefind"></div>
+</dialog>
+<script is:inline>
+  (() => {
+    const dialog = document.getElementById('search-dialog');
+    const trigger = document.getElementById('search-trigger');
+    if (!(dialog instanceof HTMLDialogElement)) return;
+    let initialized = false;
+    const init = async () => {
+      if (initialized) return;
+      initialized = true;
+      // @ts-ignore — provided by /pagefind/pagefind-ui.js
+      if (typeof PagefindUI === 'function') {
+        // @ts-ignore
+        new PagefindUI({ element: '#search-pagefind', showSubResults: true });
+      }
+    };
+    const open = () => {
+      init();
+      if (!dialog.open) dialog.showModal();
+    };
+    trigger?.addEventListener('click', open);
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        open();
+      } else if (e.key === 'Escape' && dialog.open) {
+        dialog.close();
+      }
+    });
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  })();
+</script>
