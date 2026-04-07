@@ -1,0 +1,41 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { byNewest, published } from '../../lib/collections';
+
+const entries = published(await getCollection('projects'));
+
+const shipped = byNewest(entries.filter((p) => p.data.status === 'shipped'));
+const inProgress = byNewest(entries.filter((p) => p.data.status === 'in-progress'));
+const archived = byNewest(entries.filter((p) => p.data.status === 'archived'));
+
+const groups: { title: string; items: CollectionEntry<'projects'>[] }[] = [
+  { title: 'Shipped', items: shipped },
+  { title: 'In progress', items: inProgress },
+  { title: 'Archived', items: archived },
+];
+---
+<BaseLayout
+  title="Projects"
+  description="Things I've shipped, things in progress, and things I've put away."
+>
+  <header class="list-header">
+    <h1>Projects</h1>
+    <p>Things I've built, grouped by status.</p>
+  </header>
+  {entries.length === 0 ? (
+    <p class="empty-state">No projects yet.</p>
+  ) : (
+    <div class="project-index">
+      {groups.map((group) => group.items.length > 0 && (
+        <section>
+          <h2>{group.title}</h2>
+          <div class="card-grid">
+            {group.items.map((p) => <ProjectCard entry={p} />)}
+          </div>
+        </section>
+      ))}
+    </div>
+  )}
+</BaseLayout>

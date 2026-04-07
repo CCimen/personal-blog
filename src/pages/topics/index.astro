@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TopicLinkCard from '../../components/TopicLinkCard.astro';
+import { getAllPublishedEntries } from '../../lib/collections';
+import { TOPIC_SLUGS, type TopicSlug } from '../../config/topics';
+
+const allPublished = await getAllPublishedEntries();
+
+const counts: Record<TopicSlug, number> = Object.fromEntries(
+  TOPIC_SLUGS.map((slug) => [slug, 0]),
+) as Record<TopicSlug, number>;
+
+for (const entry of allPublished) {
+  const topics = (entry.data.topics ?? []) as TopicSlug[];
+  for (const t of topics) {
+    if (t in counts) counts[t] += 1;
+  }
+}
+---
+<BaseLayout
+  title="Topics"
+  description="Everything on this site, organised by topic."
+>
+  <header class="list-header">
+    <h1>Topics</h1>
+    <p>Everything on this site, organised into the areas I care about.</p>
+  </header>
+  <div class="topic-grid">
+    {TOPIC_SLUGS.map((slug) => (
+      <div class="topic-grid-item">
+        <TopicLinkCard topic={slug} />
+        <p class="topic-count">{counts[slug]} {counts[slug] === 1 ? 'entry' : 'entries'}</p>
+      </div>
+    ))}
+  </div>
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { byNewest, published } from '../../lib/collections';
+
+const entries = byNewest(published(await getCollection('writing')));
+---
+<BaseLayout
+  title="Writing"
+  description="Essays, reflections, and learning in public."
+>
+  <header class="list-header">
+    <h1>Writing — Learning in public</h1>
+    <p>Essays and longer pieces. Occasional, sometimes rough, always honest.</p>
+  </header>
+  {entries.length === 0 ? (
+    <p class="empty-state">No essays yet.</p>
+  ) : (
+    <div class="card-grid">
+      {entries.map((entry) => <PostCard entry={entry} />)}
+    </div>
+  )}
+</BaseLayout>

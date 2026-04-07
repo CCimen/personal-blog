@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import { published } from '../../lib/collections';
+
+const entries = published(await getCollection('guides'));
+
+// Group by category, preserving first-seen order; uncategorized under "Guides".
+const groups = new Map<string, typeof entries>();
+for (const g of entries) {
+  const cat = g.data.category ?? 'Guides';
+  const list = groups.get(cat) ?? [];
+  list.push(g);
+  groups.set(cat, list);
+}
+for (const list of groups.values()) {
+  list.sort((a, b) => {
+    const ao = a.data.order ?? Number.POSITIVE_INFINITY;
+    const bo = b.data.order ?? Number.POSITIVE_INFINITY;
+    if (ao !== bo) return ao - bo;
+    return a.data.title.localeCompare(b.data.title);
+  });
+}
+---
+<BaseLayout
+  title="Guides"
+  description="Step-by-step guides and reference material."
+>
+  <header class="list-header">
+    <h1>Guides</h1>
+    <p>Step-by-step walkthroughs and reference material, grouped by category.</p>
+  </header>
+  {entries.length === 0 ? (
+    <p class="empty-state">No guides yet.</p>
+  ) : (
+    <div class="guide-index">
+      {[...groups.entries()].map(([category, items]) => (
+        <section>
+          <h2>{category}</h2>
+          <div class="card-grid">
+            {items.map((g) => <GuideCard entry={g} />)}
+          </div>
+        </section>
+      ))}
+    </div>
+  )}
+</BaseLayout>

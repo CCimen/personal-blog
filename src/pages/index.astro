@@ -1,17 +1,98 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import TopicLinkCard from '../components/TopicLinkCard.astro';
+import { entryHref, byNewest, byPinnedOrder, getAllPublishedEntries } from '../lib/collections';
+import { TOPIC_SLUGS } from '../config/topics';
 
+const allPublished = await getAllPublishedEntries();
+
+const pinned = byPinnedOrder(
+  allPublished.filter((e) => (e.data as any).pinned === true),
+);
+
+const writing = allPublished.filter((e) => e.collection === 'writing');
+const recentWriting = byNewest(writing).slice(0, 3);
+
+const projects = allPublished.filter((e) => e.collection === 'projects');
+const selectedProjects = byNewest(projects.filter((e) => (e.data as any).featured === true)).slice(0, 2);
 ---
+<BaseLayout
+  title="Çagri Cimen"
+  description="Essays, notes, guides, and projects — learning in public about AI coding, models, and team practices."
+>
+  <section class="home-hero">
+    <h1>Çagri Cimen</h1>
+    <p class="home-tagline">Engineer building with AI tools, writing about what I learn.</p>
+    <p class="home-intro">
+      I lead engineering teams and ship things with AI-assisted workflows. This site is where I
+      keep my notes, essays, guides, and projects — a working record of what I try, what sticks,
+      and what I'd do differently next time.
+    </p>
+  </section>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+  {pinned.length > 0 && (
+    <section class="home-section">
+      <h2>Pinned</h2>
+      <ul class="home-pinned">
+        {pinned.map((entry) => (
+          <li>
+            <a href={entryHref(entry)}>
+              <span class="home-pinned-kind">{entry.collection}</span>
+              <span class="home-pinned-title">{entry.data.title}</span>
+              <span class="home-pinned-desc">{entry.data.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {recentWriting.length > 0 && (
+    <section class="home-section">
+      <div class="home-section-head">
+        <h2>Recent writing</h2>
+        <a href="/writing/">All writing →</a>
+      </div>
+      <div class="card-grid">
+        {recentWriting.map((entry) => (
+          <PostCard entry={entry as any} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="home-section">
+    <div class="home-section-head">
+      <h2>Topics</h2>
+      <a href="/topics/">All topics →</a>
+    </div>
+    <div class="topic-grid">
+      {TOPIC_SLUGS.map((slug) => (
+        <TopicLinkCard topic={slug} />
+      ))}
+    </div>
+  </section>
+
+  {selectedProjects.length > 0 && (
+    <section class="home-section">
+      <div class="home-section-head">
+        <h2>Selected projects</h2>
+        <a href="/projects/">All projects →</a>
+      </div>
+      <div class="card-grid">
+        {selectedProjects.map((entry) => (
+          <ProjectCard entry={entry as any} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="home-cta">
+    <p>
+      Want more? Read the <a href="/writing/">writing archive</a> or find out
+      <a href="/about/">more about me</a>.
+    </p>
+  </section>
+</BaseLayout>

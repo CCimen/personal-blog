@@ -1,0 +1,24 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import { byNewest, published } from '../../lib/collections';
+
+const entries = byNewest(published(await getCollection('notes')));
+---
+<BaseLayout
+  title="Notes"
+  description="Short, evolving notes — ideas I'm chewing on."
+>
+  <header class="list-header">
+    <h1>Notes</h1>
+    <p>Short, evolving notes. Some grow into longer writing; some don't.</p>
+  </header>
+  {entries.length === 0 ? (
+    <p class="empty-state">No notes yet.</p>
+  ) : (
+    <div class="card-grid">
+      {entries.map((entry) => <NoteCard entry={entry} />)}
+    </div>
+  )}
+</BaseLayout>

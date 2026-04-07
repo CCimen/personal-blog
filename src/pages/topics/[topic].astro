@@ -1,0 +1,108 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import NoteCard from '../../components/NoteCard.astro';
+import GuideCard from '../../components/GuideCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { byNewest, byTopic, getAllPublishedEntries } from '../../lib/collections';
+import { TOPICS, TOPIC_SLUGS, type TopicSlug } from '../../config/topics';
+
+export async function getStaticPaths() {
+  return TOPIC_SLUGS.map((topic) => ({ params: { topic } }));
+}
+
+const { topic } = Astro.params as { topic: TopicSlug };
+const meta = TOPICS[topic];
+
+const allPublished = await getAllPublishedEntries();
+const matching = byTopic(allPublished, topic);
+
+const notes = matching.filter((e): e is CollectionEntry<'notes'> => e.collection === 'notes');
+const writing = matching.filter((e): e is CollectionEntry<'writing'> => e.collection === 'writing');
+const guides = matching.filter((e): e is CollectionEntry<'guides'> => e.collection === 'guides');
+const projects = matching.filter((e): e is CollectionEntry<'projects'> => e.collection === 'projects');
+
+// Core notes: featured notes matching the topic.
+const coreNotes = byNewest(notes.filter((n) => n.data.featured === true));
+
+// Guides: sorted by order (undefined last), then title.
+const sortedGuides = [...guides].sort((a, b) => {
+  const ao = a.data.order ?? Number.POSITIVE_INFINITY;
+  const bo = b.data.order ?? Number.POSITIVE_INFINITY;
+  if (ao !== bo) return ao - bo;
+  return a.data.title.localeCompare(b.data.title);
+});
+
+// Recent writing: top 5 by pubDate desc.
+const recentWriting = byNewest(writing).slice(0, 5);
+
+// Projects: newest first.
+const sortedProjects = byNewest(projects);
+
+// All notes: sorted by updatedDate (fallback pubDate) desc.
+const allNotes = [...notes].sort((a, b) => {
+  const ad = (a.data.updatedDate ?? a.data.pubDate).valueOf();
+  const bd = (b.data.updatedDate ?? b.data.pubDate).valueOf();
+  return bd - ad;
+});
+---
+<BaseLayout
+  title={`${meta.label} — Topics`}
+  description={meta.description}
+>
+  <header class="topic-header">
+    <p class="eyebrow"><a href="/topics/">Topics</a></p>
+    <h1>{meta.label}</h1>
+    <p class="topic-description">{meta.description}</p>
+  </header>
+
+  {matching.length === 0 && (
+    <p class="empty-state">Nothing published under this topic yet.</p>
+  )}
+
+  {coreNotes.length > 0 && (
+    <section class="topic-section">
+      <h2>Core notes</h2>
+      <div class="card-grid">
+        {coreNotes.map((n) => <NoteCard entry={n} />)}
+      </div>
+    </section>
+  )}
+
+  {sortedGuides.length > 0 && (
+    <section class="topic-section">
+      <h2>Guides</h2>
+      <div class="card-grid">
+        {sortedGuides.map((g) => <GuideCard entry={g} />)}
+      </div>
+    </section>
+  )}
+
+  {recentWriting.length > 0 && (
+    <section class="topic-section">
+      <h2>Recent writing</h2>
+      <div class="card-grid">
+        {recentWriting.map((w) => <PostCard entry={w} />)}
+      </div>
+    </section>
+  )}
+
+  {sortedProjects.length > 0 && (
+    <section class="topic-section">
+      <h2>Projects</h2>
+      <div class="card-grid">
+        {sortedProjects.map((p) => <ProjectCard entry={p} />)}
+      </div>
+    </section>
+  )}
+
+  {allNotes.length > 0 && (
+    <section class="topic-section">
+      <h2>All notes</h2>
+      <div class="card-grid">
+        {allNotes.map((n) => <NoteCard entry={n} />)}
+      </div>
+    </section>
+  )}
+</BaseLayout>
