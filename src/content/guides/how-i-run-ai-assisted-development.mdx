@@ -1,0 +1,25 @@
+---
+title: "How I run AI-assisted development"
+slug: how-i-run-ai-assisted-development
+description: "The three habits that keep my AI-assisted work from turning into a pile of unreviewable diffs."
+topics: ['workflows', 'ai-coding']
+pubDate: 2026-04-07
+maturity: growing
+category: 'Workflows'
+order: 1
+draft: false
+---
+
+A short working guide to the habits that keep AI-assisted sessions productive for me. None of this is novel, but writing it down forces me to actually follow it.
+
+## Plan first, code second
+
+Before I let the agent touch a file, I make it produce a plan I can read in one screen. If the plan looks wrong, the code will be wrong too, and catching it at the plan stage is an order of magnitude cheaper than reviewing a sprawling diff.
+
+## Commit at natural checkpoints
+
+Every time a subtask finishes and the tree is green, I commit. Small commits make it trivial to roll back a bad suggestion without losing the good ones, and they give future-me a readable history of how the feature actually came together.
+
+## Review the diff before you forget why
+
+I read every diff end-to-end before moving on, even the boring ones. The cost of skimming is a subtle bug landing on `main`; the cost of reading carefully is five minutes. The math is never close.

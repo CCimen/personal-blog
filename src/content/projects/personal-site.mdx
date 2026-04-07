@@ -1,0 +1,28 @@
+---
+title: "Personal site"
+slug: personal-site
+description: "A fast, content-first Astro site with Pagefind search, alias redirects, and a topic taxonomy I can trust."
+topics: ['notes-on-building', 'tools']
+pubDate: 2026-04-07
+maturity: stable
+status: shipped
+year: 2026
+stack: ['Astro', 'MDX', 'Pagefind', 'GitHub Pages']
+featured: true
+repo: 'https://github.com/CCimen/personal-blog'
+link: 'https://cagricimen.dev'
+draft: false
+related: ['guides/how-i-run-ai-assisted-development']
+---
+
+## Why
+
+I wanted one durable place for essays, notes, guides, and project write-ups — four shapes of content that share a taxonomy and a search index but not a layout. Most off-the-shelf blog themes assume a single content type, and stretching them to fit always felt worse than starting from a small, opinionated Astro scaffold.
+
+## Stack
+
+Astro 6 with MDX for authoring, Pagefind for client-side search, and GitHub Pages for hosting behind a custom domain. A pre-build check script validates content invariants (slug uniqueness, related-link resolution, topic validity) before Astro ever runs, and a post-build step emits static redirect stubs for any frontmatter-declared aliases.
+
+## Lessons
+
+The manifest-based related-link resolver was the single biggest win: it lets me rename files without breaking cross-references, because links go through canonical slugs instead of file ids. Biggest surprise: how much friction vanished once I committed to a fixed topic enum rather than free-form tags.
