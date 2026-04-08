@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import EntryCard from '../components/EntryCard.astro';
 import EntryRow from '../components/EntryRow.astro';
 import TopicLinkCard from '../components/TopicLinkCard.astro';
 import { byNewest, byPinnedOrder, getAllPublishedEntries } from '../lib/collections';
@@ -24,12 +23,14 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
 >
   <section class="home-hero">
     <h1>Çagri Cimen</h1>
-    <p class="home-tagline">Engineer building with AI tools, writing about what I learn.</p>
-    <p class="home-intro">
-      I lead engineering teams and ship things with AI-assisted workflows. This site is where I
-      keep my notes, essays, guides, and projects — a working record of what I try, what sticks,
-      and what I'd do differently next time.
-    </p>
+    <div class="home-hero-text">
+      <p class="home-tagline">Engineer building with AI tools, writing about what I learn.</p>
+      <p class="home-intro">
+        I lead engineering teams and ship things with AI-assisted workflows. This site is where I
+        keep my notes, essays, guides, and projects — a working record of what I try, what sticks,
+        and what I'd do differently next time.
+      </p>
+    </div>
   </section>
 
   {pinned.length > 0 && (
@@ -37,9 +38,11 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
       <div class="home-section-head">
         <h2>Pinned</h2>
       </div>
-      <div class="card-grid">
-        {pinned.map((entry) => <EntryCard entry={entry} />)}
-      </div>
+      <ul class="featured-entry-list">
+        {pinned.map((entry) => (
+          <li><EntryRow entry={entry} /></li>
+        ))}
+      </ul>
     </section>
   )}
 
@@ -57,7 +60,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
     </section>
   )}
 
-  <section class="home-section">
+  <section class="home-section home-section--wide">
     <div class="home-section-head">
       <h2>Topics</h2>
       <a href="/topics/">All topics →</a>

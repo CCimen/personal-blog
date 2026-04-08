@@ -600,10 +600,10 @@ main {
 .entry-list {
   list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
 }
 .entry-list > li {
   border-bottom: 1px solid var(--color-border);
@@ -649,7 +649,6 @@ main {
   color: var(--color-muted);
   font-size: 1.0625rem;
   line-height: 1.55;
-  max-width: 64ch;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -931,32 +930,42 @@ main {
    Section / page shell — added by /normalize
    ============================================================ */
 
-/* === Hero — editorial display === */
+/* === Hero — editorial display ===
+   Sized to actually fill the wide container at desktop widths.
+   Bricolage Grotesque at this scale becomes the focal moment of
+   the homepage. Tagline + intro sit in a narrower reading column
+   below for a deliberate display→reading transition. */
 .home-hero {
-  margin: 3rem auto 4.5rem;
+  margin: 4rem auto 6rem;
   max-width: var(--width-content);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 2rem;
 }
 .home-hero h1 {
   margin: 0;
   padding-bottom: 0.5rem;
   font-family: var(--font-display);
-  font-size: clamp(3rem, 9vw + 0.5rem, 6.5rem);
-  line-height: 0.92;
+  font-size: clamp(3.5rem, 12vw, 10rem);
+  line-height: 0.88;
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.05em;
   color: var(--color-text);
   font-optical-sizing: auto;
 }
 .home-hero h1::after {
   content: '';
   display: block;
-  width: 4rem;
+  width: 5rem;
   height: 3px;
   background: var(--color-accent);
-  margin-top: 1rem;
+  margin-top: 1.5rem;
+}
+.home-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  max-width: var(--width-text);
 }
 .home-tagline {
   margin: 0;
@@ -976,9 +985,18 @@ main {
   font-family: var(--font-serif);
 }
 
-/* === Section rhythm — editorial === */
+/* === Section rhythm — editorial ===
+   Reading sections (Pinned, Recent writing, Selected projects) are
+   constrained to --width-text so they sit inside the editorial
+   measure. The wide --width-content stays for sections that
+   actually use the space (Topics 4-col grid). The result is a
+   rhythm of narrow→narrow→WIDE→narrow that reads as deliberate
+   asymmetric variation. */
 .home-section {
-  margin: 4.5rem auto 0;
+  margin: 4rem auto 0;
+  max-width: var(--width-text);
+}
+.home-section--wide {
   max-width: var(--width-content);
 }
 .home-section > h2 {
@@ -995,7 +1013,7 @@ main {
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--color-border);
 }
 .home-section-head h2 {
@@ -1022,10 +1040,56 @@ main {
   border-bottom-color: var(--color-accent);
 }
 
+/* === Featured entry — Pinned section on the homepage ===
+   Replaces the Pinned card with an editorial "featured" treatment:
+   a thick oxblood left rule, a much larger title, an italic serif
+   description that sits at lede weight, and the same mono meta row
+   used elsewhere. No card border, no background fill — the rule
+   alone says "this matters." */
+.featured-entry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.featured-entry-list > li {
+  position: relative;
+  padding-left: 1.75rem;
+}
+.featured-entry-list > li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  width: 4px;
+  background: var(--color-accent);
+}
+.featured-entry-list .entry-row {
+  gap: 0.85rem;
+}
+.featured-entry-list .entry-row-title {
+  font-size: clamp(1.85rem, 3.5vw + 0.6rem, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}
+.featured-entry-list .entry-row-desc {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--color-muted);
+  -webkit-line-clamp: 4;
+}
+.featured-entry-list .entry-row-meta {
+  margin-top: 0.35rem;
+}
+
 /* === Bottom CTA strip === */
 .home-cta {
   margin: 5rem auto 0;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
   padding-top: 2.5rem;
   border-top: 1px solid var(--color-border);
   color: var(--color-muted);
@@ -1045,10 +1109,12 @@ main {
   text-decoration-color: var(--color-accent);
 }
 
-/* === List & topic page headers — editorial scale === */
+/* === List & topic page headers — editorial scale ===
+   Narrow column so the title sits inside the reading measure
+   instead of stretching across an empty wide container. */
 .list-header {
   margin: 2.5rem auto 3rem;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -1083,7 +1149,7 @@ main {
 
 .topic-header {
   margin: 2.5rem auto 3rem;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -1135,7 +1201,7 @@ main {
 /* Topic hub aggregated section */
 .topic-section {
   margin: 3rem auto 0;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
 }
 .topic-section h2 {
   margin: 0 0 1rem;
@@ -1147,7 +1213,7 @@ main {
 /* Empty state messaging */
 .empty-state {
   margin: 2rem auto;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
   color: var(--color-muted);
   font-style: italic;
 }
@@ -1162,13 +1228,12 @@ main {
   margin: 0;
 }
 
-/* Topic grid — slightly tighter min */
+/* Topic grid — wider container, 4-column rhythm at desktop */
 .topic-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
+  gap: 1.25rem;
   margin: 0 auto;
-  max-width: var(--width-content);
 }
 .topic-grid-item {
   display: flex;
@@ -1186,7 +1251,7 @@ main {
 .guide-index,
 .project-index {
   margin: 0 auto;
-  max-width: var(--width-content);
+  max-width: var(--width-text);
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
