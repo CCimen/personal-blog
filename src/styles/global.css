@@ -25,6 +25,7 @@
   --color-rule:         oklch(22%   0.020 50);    /* hard rule = ink */
   --color-accent:       oklch(45%   0.13  22);    /* oxblood */
   --color-accent-hover: oklch(38%   0.14  22);    /* darker oxblood */
+  --color-accent-deep:  oklch(30%   0.13  22);    /* deepest — drop cap, active states */
   --color-accent-soft:  oklch(94%   0.022 22);    /* oxblood paper wash */
 }
 :root[data-theme='dark'] {
@@ -38,6 +39,7 @@
   --color-rule:         oklch(94%   0.012 80);    /* hard rule = cream */
   --color-accent:       oklch(72%   0.16  22);    /* warm oxblood */
   --color-accent-hover: oklch(78%   0.17  22);    /* lighter on hover */
+  --color-accent-deep:  oklch(82%   0.17  22);    /* brightest in dark mode */
   --color-accent-soft:  oklch(28%   0.05  22);    /* deep wash */
 }
 html {
@@ -123,13 +125,40 @@ body {
 }
 .prose pre {
   font-family: var(--font-mono);
-  background: var(--color-elevated);
+  background: oklch(99.2% 0.012 80);             /* warmer than the page bg */
   border: 1px solid var(--color-border);
   border-radius: 4px;
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.35rem;
   overflow-x: auto;
   font-size: 0.92em;
-  line-height: 1.55;
+  line-height: 1.6;
+}
+:root[data-theme='dark'] .prose pre {
+  background: oklch(18% 0.018 60);
+}
+
+/* === Shiki dual-theme swap ===
+   The Vitesse light theme paints inline color/bg styles by default.
+   In dark mode, swap to the dark theme variables that Shiki emits with
+   --shiki-dark / --shiki-dark-bg prefixes. */
+:root[data-theme='dark'] .prose pre,
+:root[data-theme='dark'] .prose pre code {
+  background-color: var(--shiki-dark-bg) !important;
+  color: var(--shiki-dark) !important;
+}
+:root[data-theme='dark'] .prose pre code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+/* Shiki wrap=true sometimes adds line backgrounds — keep them transparent */
+.prose pre code {
+  background: transparent;
+  display: block;
+  width: max-content;
+  min-width: 100%;
 }
 .prose blockquote {
   margin: 1.5em 0;
@@ -168,8 +197,8 @@ body {
   float: left;
   font-size: 4.6em;
   line-height: 0.85;
-  margin: 0.05em 0.08em 0 0;
-  color: var(--color-accent);
+  margin: 0.05em 0.12em 0 0;
+  color: var(--color-accent-deep);
   font-feature-settings: 'kern';
   -webkit-initial-letter: 3;
   initial-letter: 3;
@@ -581,12 +610,22 @@ main {
 }
 .article-header h1 {
   margin: 0;
+  padding-bottom: 0.6rem;
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw + 0.8rem, 3.25rem);
   line-height: 1.02;
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--color-text);
+  position: relative;
+}
+.article-header h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: var(--color-accent);
+  margin-top: 0.85rem;
 }
 .article-header .article-meta {
   display: flex;
@@ -689,11 +728,20 @@ main {
 }
 .project-header h1 {
   margin: 0;
+  padding-bottom: 0.6rem;
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw + 0.8rem, 3.25rem);
   line-height: 1.02;
   letter-spacing: -0.035em;
   font-weight: 800;
+}
+.project-header h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: var(--color-accent);
+  margin-top: 0.85rem;
 }
 .project-header .project-meta {
   display: flex;
@@ -761,14 +809,22 @@ main {
 }
 .home-hero h1 {
   margin: 0;
+  padding-bottom: 0.5rem;
   font-family: var(--font-display);
   font-size: clamp(3rem, 9vw + 0.5rem, 6.5rem);
   line-height: 0.92;
   font-weight: 800;
   letter-spacing: -0.045em;
   color: var(--color-text);
-  /* Variable optical size pulls the display cut at large sizes */
   font-optical-sizing: auto;
+}
+.home-hero h1::after {
+  content: '';
+  display: block;
+  width: 4rem;
+  height: 3px;
+  background: var(--color-accent);
+  margin-top: 1rem;
 }
 .home-tagline {
   margin: 0;
@@ -869,11 +925,20 @@ main {
 }
 .list-header h1 {
   margin: 0;
+  padding-bottom: 0.6rem;
   font-family: var(--font-display);
   font-size: clamp(2rem, 5vw + 0.8rem, 3rem);
   line-height: 1.02;
   font-weight: 800;
   letter-spacing: -0.035em;
+}
+.list-header h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: var(--color-accent);
+  margin-top: 0.85rem;
 }
 .list-header p {
   margin: 0;
@@ -895,11 +960,20 @@ main {
 }
 .topic-header h1 {
   margin: 0;
+  padding-bottom: 0.6rem;
   font-family: var(--font-display);
   font-size: clamp(2.25rem, 6vw + 0.5rem, 4rem);
   line-height: 1.0;
   font-weight: 800;
   letter-spacing: -0.04em;
+}
+.topic-header h1::after {
+  content: '';
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: var(--color-accent);
+  margin-top: 0.85rem;
 }
 .topic-description {
   margin: 0;
