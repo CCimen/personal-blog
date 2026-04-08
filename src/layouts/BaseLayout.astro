@@ -12,14 +12,20 @@ const { title, description, image } = Astro.props;
   <head>
     <BaseHead title={title} description={description} image={image} />
     <script is:inline>
-      // Pre-hydration theme to avoid flash
-      const t = localStorage.getItem('theme') ?? 'light';
-      document.documentElement.dataset.theme = t;
+      // Pre-hydration theme to avoid flash. Order: explicit user choice → system preference → light.
+      (function () {
+        var stored = null;
+        try { stored = localStorage.getItem('theme'); } catch (_) {}
+        var sys = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        var t = stored === 'dark' || stored === 'light' ? stored : sys;
+        document.documentElement.dataset.theme = t;
+      })();
     </script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <SiteHeader />
-    <main><slot /></main>
+    <main id="main-content" tabindex="-1"><slot /></main>
     <SiteFooter />
     <SearchModal />
     <script is:inline>
