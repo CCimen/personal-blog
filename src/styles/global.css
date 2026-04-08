@@ -27,6 +27,18 @@
   --color-accent-hover: oklch(38%   0.14  22);    /* darker oxblood */
   --color-accent-deep:  oklch(30%   0.13  22);    /* deepest — drop cap, active states */
   --color-accent-soft:  oklch(94%   0.022 22);    /* oxblood paper wash */
+
+  /* === Motion — exponential ease-out family ===
+     Editorial sites earn their calm from slow, confident deceleration.
+     Quart for micro-interactions, quint for the default, expo for
+     dramatic reveals. No bounce, no elastic — they cheapen the feel. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: var(--ease-out-quint);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:   150ms;
+  --duration-base:   250ms;
+  --duration-slow:   450ms;
+  --duration-reveal: 600ms;
 }
 :root[data-theme='dark'] {
   --color-bg:           oklch(15%   0.015 60);    /* warm ink */
@@ -108,7 +120,8 @@ body {
   text-decoration-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  transition: text-decoration-color 200ms ease-out;
+  transition: text-decoration-color var(--duration-base) var(--ease-out-quart),
+              color var(--duration-base) var(--ease-out-quart);
 }
 .prose a:hover {
   text-decoration-color: var(--color-accent);
@@ -210,7 +223,7 @@ body {
   color: var(--color-subtle);
   text-decoration: none;
   opacity: 0;
-  transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 200ms var(--ease-out-quint);
   font-family: var(--font-display);
   font-weight: 600;
 }
@@ -440,8 +453,8 @@ main {
   color: var(--color-muted);
   text-decoration: none;
   background: var(--color-card);
-  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
-              color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 200ms var(--ease-out-quint),
+              color 200ms var(--ease-out-quint);
 }
 .topic-chip:hover {
   color: var(--color-accent);
@@ -461,8 +474,8 @@ main {
   background: var(--color-card);
   text-decoration: none;
   color: var(--color-text);
-  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
-              background 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 200ms var(--ease-out-quint),
+              background 200ms var(--ease-out-quint);
 }
 .topic-link-card:hover {
   border-color: var(--color-rule);
@@ -528,8 +541,8 @@ main {
   border: 1px solid var(--color-border);
   background: var(--color-card);
   color: var(--color-text);
-  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
-              background 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 200ms var(--ease-out-quint),
+              background 200ms var(--ease-out-quint);
 }
 .card:hover {
   border-color: var(--color-rule);
@@ -546,7 +559,7 @@ main {
 .card-link {
   color: var(--color-text);
   text-decoration: none;
-  transition: color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 200ms var(--ease-out-quint);
 }
 .card-link::before {
   content: '';
@@ -635,8 +648,8 @@ main {
   background-size: 0% 1px;
   background-repeat: no-repeat;
   background-position: 0 100%;
-  transition: background-size 250ms cubic-bezier(0.22, 1, 0.36, 1),
-              color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: background-size 250ms var(--ease-out-quint),
+              color 200ms var(--ease-out-quint);
   padding-bottom: 1px;
 }
 .entry-row-title a:hover {
@@ -1033,7 +1046,7 @@ main {
   white-space: nowrap;
   border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
   padding-bottom: 1px;
-  transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: border-color 200ms var(--ease-out-quint);
 }
 .home-section-head a:hover {
   color: var(--color-accent-hover);
@@ -1562,3 +1575,95 @@ main {
     inset: 0;
   }
 }
+
+/* ============================================================
+   /animate — restrained editorial motion
+   ============================================================ */
+
+/* Keyframes — transform + opacity only (GPU-accelerated) */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes rule-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- Homepage hero: one orchestrated reveal on load ---
+   The hero title fades up first, the oxblood rule grows in from the
+   left while the title is still settling, the tagline+intro follow
+   briefly behind, and the sections cascade in with a tight stagger
+   based on the --stagger custom property set in markup. */
+.home-hero h1 {
+  animation: fade-up var(--duration-reveal) var(--ease-out-expo) both;
+}
+.home-hero h1::after {
+  transform-origin: left center;
+  animation: rule-grow 800ms var(--ease-out-expo) 280ms both;
+}
+.home-hero-text {
+  animation: fade-up 520ms var(--ease-out-expo) 120ms both;
+}
+
+/* Sections cascade in — each section sets its own --stagger inline */
+.home-section,
+.home-cta {
+  animation: fade-up 560ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--stagger, 0) * 90ms + 380ms);
+}
+
+/* --- Topic-link card: subtle hover lift ---
+   This is the only card surface left on the site after /distill.
+   A 2px translateY on hover plus the existing border-color /
+   background swap gives it life without breaking the editorial calm. */
+.topic-link-card {
+  transition: border-color var(--duration-base) var(--ease-out-quart),
+              background var(--duration-base) var(--ease-out-quart),
+              transform var(--duration-base) var(--ease-out-quart);
+  will-change: transform;
+}
+.topic-link-card:hover {
+  transform: translateY(-2px);
+}
+
+/* --- Search dialog: fade + scale on open ---
+   Native <dialog> doesn't play nicely with transitions because the
+   [open] state swap happens on display change. Keyframe animation
+   runs reliably on open. Close is intentionally instant. */
+#search-dialog[open] {
+  animation: dialog-in 220ms var(--ease-out-quart);
+}
+#search-dialog[open]::backdrop {
+  animation: backdrop-in 220ms var(--ease-out-quart);
+}
+
+/* --- Reduced motion — kill all of the above ---
+   The global @media (prefers-reduced-motion: reduce) block from
+   /harden already sets animation-duration: 0.001ms on everything,
+   which handles the cascade above too. No additional overrides
+   needed — verified in production. */

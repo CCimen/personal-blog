@@ -34,7 +34,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
   </section>
 
   {pinned.length > 0 && (
-    <section class="home-section">
+    <section class="home-section" style="--stagger: 1">
       <div class="home-section-head">
         <h2>Pinned</h2>
       </div>
@@ -47,7 +47,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
   )}
 
   {recentWriting.length > 0 && (
-    <section class="home-section">
+    <section class="home-section" style="--stagger: 2">
       <div class="home-section-head">
         <h2>Recent writing</h2>
         <a href="/writing/">All writing →</a>
@@ -60,7 +60,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
     </section>
   )}
 
-  <section class="home-section home-section--wide">
+  <section class="home-section home-section--wide" style="--stagger: 3">
     <div class="home-section-head">
       <h2>Topics</h2>
       <a href="/topics/">All topics →</a>
@@ -73,7 +73,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
   </section>
 
   {selectedProjects.length > 0 && (
-    <section class="home-section">
+    <section class="home-section" style="--stagger: 4">
       <div class="home-section-head">
         <h2>Selected projects</h2>
         <a href="/projects/">All projects →</a>
@@ -86,7 +86,7 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
     </section>
   )}
 
-  <section class="home-cta">
+  <section class="home-cta" style="--stagger: 5">
     <p>
       Want more? Read the <a href="/writing/">writing archive</a> or find out
       <a href="/about/">more about me</a>.
