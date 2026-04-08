@@ -417,29 +417,96 @@ main {
   }
 }
 
-/* === Site footer === */
+/* === Site footer — editorial three-column with colophon === */
 .site-footer {
+  margin-top: 6rem;
   border-top: 1px solid var(--color-border);
-  padding: 2.5rem 1.5rem;
+  padding: 3.5rem 1.5rem 2.5rem;
   color: var(--color-muted);
   font-family: var(--font-serif);
-  font-size: 0.9rem;
-  font-style: italic;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-top: 4rem;
+  /* Break out of main's max-width so the footer spans the viewport.
+     The inner wrappers handle their own centering. */
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .site-footer a {
   color: var(--color-muted);
-  text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--color-muted) 30%, transparent);
-  text-underline-offset: 3px;
+  text-decoration: none;
+  transition: color var(--duration-base) var(--ease-out-quart);
 }
 .site-footer a:hover {
   color: var(--color-accent);
-  text-decoration-color: var(--color-accent);
+}
+.footer-inner {
+  max-width: var(--width-content);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.footer-brand .footer-name {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  letter-spacing: -0.015em;
+}
+.footer-brand .footer-tagline {
+  margin: 0;
+  font-style: italic;
+  color: var(--color-muted);
+  max-width: 32ch;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.footer-section h2 {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-subtle);
+}
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.95rem;
+}
+.footer-section a {
+  font-family: var(--font-serif);
+}
+.footer-colophon {
+  max-width: var(--width-content);
+  margin: 3rem auto 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-subtle);
+  font-size: 0.85rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+.footer-colophon p { margin: 0; }
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 2.5rem 1rem 2rem;
+  }
+  .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .footer-colophon {
+    margin-top: 2rem;
+  }
 }
 
 /* === Topic chips === */
@@ -774,13 +841,40 @@ main {
 }
 .article-header .article-meta {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: baseline;
+  gap: 1.25rem;
   flex-wrap: wrap;
-  color: var(--color-muted);
-  font-size: 0.88rem;
+  color: var(--color-subtle);
+  font-size: 0.78rem;
   font-family: var(--font-mono);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+/* Flatten bordered children inside the article meta row so it reads
+   as a single mono caption line, not three competing chips. */
+.article-header .article-meta .maturity-badge,
+.article-header .article-meta .copy-link-button {
+  background: transparent;
+  border: none;
+  padding: 0;
+  min-height: 0;
+  min-width: 0;
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  line-height: inherit;
+}
+.article-header .article-meta .maturity-badge[data-level='stable']   { color: var(--color-accent); }
+.article-header .article-meta .maturity-badge[data-level='growing']  { color: oklch(50% 0.12 145); }
+.article-header .article-meta .maturity-badge[data-level='seed']     { color: oklch(55% 0.13 70); }
+.article-header .article-meta .maturity-badge[data-level='archived'] { color: var(--color-subtle); }
+.article-header .article-meta .copy-link-button:hover { color: var(--color-accent); }
+/* Separator between article meta items — small centered dot */
+.article-header .article-meta > * + *::before {
+  content: '·';
+  margin-right: 1rem;
+  color: var(--color-border);
 }
 .article-header .article-lede {
   margin: 0;
@@ -947,10 +1041,12 @@ main {
    Sized to actually fill the wide container at desktop widths.
    Bricolage Grotesque at this scale becomes the focal moment of
    the homepage. Tagline + intro sit in a narrower reading column
-   below for a deliberate display→reading transition. */
+   below for a deliberate display→reading transition. Left-aligned
+   inside main (no margin: auto) so homepage sections share the
+   same left edge. */
 .home-hero {
-  margin: 4rem auto 6rem;
-  max-width: var(--width-content);
+  margin: 4rem 0 6rem;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -1006,11 +1102,11 @@ main {
    rhythm of narrow→narrow→WIDE→narrow that reads as deliberate
    asymmetric variation. */
 .home-section {
-  margin: 4rem auto 0;
+  margin: 4rem 0 0;
   max-width: var(--width-text);
 }
 .home-section--wide {
-  max-width: var(--width-content);
+  max-width: 100%;
 }
 .home-section > h2 {
   margin: 0 0 1.5rem;
@@ -1101,7 +1197,7 @@ main {
 
 /* === Bottom CTA strip === */
 .home-cta {
-  margin: 5rem auto 0;
+  margin: 5rem 0 0;
   max-width: var(--width-text);
   padding-top: 2.5rem;
   border-top: 1px solid var(--color-border);
@@ -1133,6 +1229,13 @@ main {
   gap: 1rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--color-border);
+}
+/* Widens the header on pages that pair with a wide content surface
+   below (topics index, which has a 4-column topic grid). Shares the
+   grid's horizontal extent so the title and the grid have the same
+   left edge. */
+.list-header--wide {
+  max-width: 100%;
 }
 .list-header h1 {
   margin: 0;
@@ -1241,12 +1344,18 @@ main {
   margin: 0;
 }
 
-/* Topic grid — wider container, 4-column rhythm at desktop */
+/* Topic grid — responsive, capped at 4 columns at desktop so 7
+   topics render as 4+3 instead of 6+1 orphan. */
 .topic-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   gap: 1.25rem;
-  margin: 0 auto;
+  margin: 0;
+}
+@media (min-width: 1100px) {
+  .topic-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 .topic-grid-item {
   display: flex;
@@ -1530,8 +1639,12 @@ p, li, dt, dd, blockquote {
   padding-block: 0.35rem;
 }
 
-/* Tighten main padding on mobile — give content room to breathe */
+/* Main container — capped at --width-content so homepage sections
+   can share a common left edge. List/topic/article pages still use
+   their own `margin: 0 auto` to stay centered inside main. */
 main {
+  max-width: var(--width-content);
+  margin-inline: auto;
   padding: 1.25rem 1rem 3rem;
 }
 @media (min-width: 768px) {

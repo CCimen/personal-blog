@@ -1,11 +1,47 @@
 ---
 const year = new Date().getFullYear();
+
+const siteLinks = [
+  { href: '/writing/', label: 'Writing' },
+  { href: '/notes/', label: 'Notes' },
+  { href: '/topics/', label: 'Topics' },
+  { href: '/guides/', label: 'Guides' },
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+] as const;
+
+const externalLinks = [
+  { href: 'https://github.com/CCimen', label: 'GitHub', rel: 'me noopener' },
+  { href: '/writing/rss.xml', label: 'RSS', rel: undefined },
+] as const;
 ---
 <footer class="site-footer">
-  <span>© {year} Çagri Cimen</span>
-  <span>
-    <a href="https://github.com/CCimen" rel="me noopener">GitHub</a>
-    &nbsp;·&nbsp;
-    <a href="/writing/rss.xml">RSS</a>
-  </span>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <p class="footer-name">Çagri Cimen</p>
+      <p class="footer-tagline">Engineer building with AI tools, writing about what I learn.</p>
+    </div>
+    <nav class="footer-section" aria-label="Site sections">
+      <h2>Sections</h2>
+      <ul>
+        {siteLinks.map(({ href, label }) => (
+          <li><a href={href}>{label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <div class="footer-section">
+      <h2>Elsewhere</h2>
+      <ul>
+        {externalLinks.map(({ href, label, rel }) => (
+          <li><a href={href} rel={rel}>{label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="footer-colophon">
+    <p>
+      © {year} Çagri Cimen. Set in Source Serif 4 &amp; Bricolage Grotesque.
+      Built with Astro on warm cream paper.
+    </p>
+  </div>
 </footer>
