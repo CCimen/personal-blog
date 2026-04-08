@@ -1,6 +1,6 @@
 # personalblog
 
-The personal site of Çagri Cimen — notes, learnings, and writings on AI, engineering workflows, and personal projects.
+The personal site of Çagri Çimen — notes, learnings, and writings on AI, engineering workflows, and personal projects.
 
 Lives at [cagricimen.dev](https://cagricimen.dev). Built with [Astro](https://astro.build) + [bun](https://bun.sh), deployed via GitHub Pages.
 

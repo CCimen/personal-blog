@@ -8,20 +8,59 @@
     const dialog = document.getElementById('search-dialog');
     const trigger = document.getElementById('search-trigger');
     if (!(dialog instanceof HTMLDialogElement)) return;
+
+    let assetsLoading = null;
     let initialized = false;
-    const init = async () => {
+
+    /**
+     * Lazy-load Pagefind UI assets on first search open.
+     * Previously loaded eagerly from BaseHead (~30KB gzipped of JS
+     * on every page). Now the assets are prefetched during idle
+     * time and only parsed/executed when the user actually opens
+     * the search dialog.
+     */
+    const loadPagefindAssets = () => {
+      if (assetsLoading) return assetsLoading;
+      assetsLoading = new Promise((resolve) => {
+        let styleReady = false;
+        let scriptReady = false;
+        const done = () => {
+          if (styleReady && scriptReady) resolve();
+        };
+
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/pagefind/pagefind-ui.css';
+        link.addEventListener('load', () => { styleReady = true; done(); });
+        link.addEventListener('error', () => { styleReady = true; done(); });
+        document.head.appendChild(link);
+
+        const script = document.createElement('script');
+        script.src = '/pagefind/pagefind-ui.js';
+        script.addEventListener('load', () => { scriptReady = true; done(); });
+        script.addEventListener('error', () => { scriptReady = true; done(); });
+        document.head.appendChild(script);
+      });
+      return assetsLoading;
+    };
+
+    const initialize = async () => {
       if (initialized) return;
+      await loadPagefindAssets();
       initialized = true;
-      // @ts-ignore — provided by /pagefind/pagefind-ui.js
+      // @ts-ignore — PagefindUI is provided by the lazy-loaded script
       if (typeof PagefindUI === 'function') {
         // @ts-ignore
         new PagefindUI({ element: '#search-pagefind', showSubResults: true });
       }
     };
+
     const open = () => {
-      init();
       if (!dialog.open) dialog.showModal();
+      // Start loading assets without blocking the dialog open
+      initialize();
     };
+
     trigger?.addEventListener('click', open);
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {

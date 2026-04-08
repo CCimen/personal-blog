@@ -7,6 +7,14 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 export default defineConfig({
   site: 'https://cagricimen.dev',
   base: '/',
+  // Prefetch internal links on hover / viewport-enter so nav clicks
+  // feel instant. Astro warms up the target page's HTML + assets
+  // before the click lands. Low-priority network hint, no animation
+  // impact, zero risk.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'hover',
+  },
   integrations: [mdx(), sitemap()],
   markdown: {
     shikiConfig: {

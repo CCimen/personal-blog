@@ -6,7 +6,7 @@ export async function GET(context) {
   const posts = (await getCollection('writing', ({ data }) => !data.draft))
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
   return rss({
-    title: 'Çagri Cimen — Writing',
+    title: 'Çagri Çimen — Writing',
     description: 'Essays, reflections, and learning in public.',
     site: context.site,
     items: posts.map((post) => ({
