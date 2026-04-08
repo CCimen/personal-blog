@@ -12,8 +12,10 @@ interface Props {
 const { entry } = Astro.props;
 const topics = (entry.data.topics ?? []) as TopicSlug[];
 ---
-<a class="card" href={entryHref(entry)}>
-  <h3>{entry.data.title}</h3>
+<article class="card">
+  <h3 class="card-title">
+    <a class="card-link" href={entryHref(entry)}>{entry.data.title}</a>
+  </h3>
   <p>{entry.data.description}</p>
   <div class="card-meta">
     <FormattedDate date={entry.data.pubDate} format="short" />
@@ -24,4 +26,4 @@ const topics = (entry.data.topics ?? []) as TopicSlug[];
       {topics.map((t) => <TopicChip topic={t} />)}
     </div>
   )}
-</a>
+</article>

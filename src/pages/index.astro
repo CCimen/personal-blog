@@ -1,8 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EntryCard from '../components/EntryCard.astro';
-import PostCard from '../components/PostCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import EntryRow from '../components/EntryRow.astro';
 import TopicLinkCard from '../components/TopicLinkCard.astro';
 import { byNewest, byPinnedOrder, getAllPublishedEntries } from '../lib/collections';
 import { TOPIC_SLUGS } from '../config/topics';
@@ -14,10 +13,10 @@ const pinned = byPinnedOrder(
 );
 
 const writing = allPublished.filter((e) => e.collection === 'writing');
-const recentWriting = byNewest(writing).slice(0, 3);
+const recentWriting = byNewest(writing).slice(0, 5);
 
 const projects = allPublished.filter((e) => e.collection === 'projects');
-const selectedProjects = byNewest(projects.filter((e) => (e.data as any).featured === true)).slice(0, 2);
+const selectedProjects = byNewest(projects.filter((e) => (e.data as any).featured === true)).slice(0, 3);
 ---
 <BaseLayout
   title="Çagri Cimen"
@@ -50,11 +49,11 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
         <h2>Recent writing</h2>
         <a href="/writing/">All writing →</a>
       </div>
-      <div class="card-grid">
+      <ul class="entry-list">
         {recentWriting.map((entry) => (
-          <PostCard entry={entry as any} />
+          <li><EntryRow entry={entry} /></li>
         ))}
-      </div>
+      </ul>
     </section>
   )}
 
@@ -76,11 +75,11 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
         <h2>Selected projects</h2>
         <a href="/projects/">All projects →</a>
       </div>
-      <div class="card-grid">
+      <ul class="entry-list">
         {selectedProjects.map((entry) => (
-          <ProjectCard entry={entry as any} />
+          <li><EntryRow entry={entry} /></li>
         ))}
-      </div>
+      </ul>
     </section>
   )}
 

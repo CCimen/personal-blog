@@ -1,7 +1,7 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import EntryRow from '../../components/EntryRow.astro';
 import { byNewest, published } from '../../lib/collections';
 
 const entries = published(await getCollection('projects'));
@@ -31,9 +31,11 @@ const groups: { title: string; items: CollectionEntry<'projects'>[] }[] = [
       {groups.map((group) => group.items.length > 0 && (
         <section>
           <h2>{group.title}</h2>
-          <div class="card-grid">
-            {group.items.map((p) => <ProjectCard entry={p} />)}
-          </div>
+          <ul class="entry-list">
+            {group.items.map((p) => (
+              <li><EntryRow entry={p} /></li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>

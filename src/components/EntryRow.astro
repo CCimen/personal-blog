@@ -1,0 +1,52 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { TopicSlug } from '../config/topics';
+import { entryHref, type AnyEntry } from '../lib/collections';
+import { TOPICS } from '../config/topics';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+  entry: AnyEntry;
+}
+const { entry } = Astro.props;
+const topics = (entry.data.topics ?? []) as TopicSlug[];
+const isProject = entry.collection === 'projects';
+const projectStatusLabels: Record<string, string> = {
+  'in-progress': 'In progress',
+  shipped: 'Shipped',
+  archived: 'Archived',
+};
+---
+<article class="entry-row">
+  <h3 class="entry-row-title">
+    <a href={entryHref(entry)}>{entry.data.title}</a>
+  </h3>
+  <p class="entry-row-desc">{entry.data.description}</p>
+  <div class="entry-row-meta">
+    {isProject ? (
+      <>
+        <span class="entry-row-date">{(entry as CollectionEntry<'projects'>).data.year}</span>
+        <span class="entry-row-status" data-status={(entry as CollectionEntry<'projects'>).data.status}>
+          {projectStatusLabels[(entry as CollectionEntry<'projects'>).data.status]}
+        </span>
+      </>
+    ) : (
+      <FormattedDate date={entry.data.pubDate} format="short" />
+    )}
+    {!isProject && entry.data.maturity && (
+      <span class="entry-row-maturity" data-level={entry.data.maturity}>
+        {entry.data.maturity}
+      </span>
+    )}
+    {topics.length > 0 && (
+      <span class="entry-row-topics">
+        {topics.map((t, i) => (
+          <>
+            {i > 0 && <span class="entry-row-topic-sep">·</span>}
+            <span class="entry-row-topic">{TOPICS[t].label}</span>
+          </>
+        ))}
+      </span>
+    )}
+  </div>
+</article>

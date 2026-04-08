@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
+import EntryRow from '../../components/EntryRow.astro';
 import { byNewest, published } from '../../lib/collections';
 
 const entries = byNewest(published(await getCollection('writing')));
@@ -17,8 +17,10 @@ const entries = byNewest(published(await getCollection('writing')));
   {entries.length === 0 ? (
     <p class="empty-state">No essays yet.</p>
   ) : (
-    <div class="card-grid">
-      {entries.map((entry) => <PostCard entry={entry} />)}
-    </div>
+    <ul class="entry-list">
+      {entries.map((entry) => (
+        <li><EntryRow entry={entry} /></li>
+      ))}
+    </ul>
   )}
 </BaseLayout>

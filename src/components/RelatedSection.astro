@@ -1,6 +1,6 @@
 ---
 import { resolveRelated } from '../lib/related';
-import EntryCard from './EntryCard.astro';
+import EntryRow from './EntryRow.astro';
 
 interface Props {
   refs: string[];
@@ -11,9 +11,9 @@ const entries = refs && refs.length > 0 ? await resolveRelated(refs) : [];
 {entries.length > 0 && (
   <aside class="related-section">
     <h2>Related</h2>
-    <ul class="related-list">
+    <ul class="entry-list related-entry-list">
       {entries.map((entry) => (
-        <li><EntryCard entry={entry} /></li>
+        <li><EntryRow entry={entry} /></li>
       ))}
     </ul>
   </aside>

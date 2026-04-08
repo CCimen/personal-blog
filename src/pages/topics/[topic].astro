@@ -1,10 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
-import NoteCard from '../../components/NoteCard.astro';
-import GuideCard from '../../components/GuideCard.astro';
-import ProjectCard from '../../components/ProjectCard.astro';
+import EntryRow from '../../components/EntryRow.astro';
 import { byNewest, byTopic, getAllPublishedEntries } from '../../lib/collections';
 import { TOPICS, TOPIC_SLUGS, type TopicSlug } from '../../config/topics';
 
@@ -64,45 +61,45 @@ const allNotes = [...notes].sort((a, b) => {
   {coreNotes.length > 0 && (
     <section class="topic-section">
       <h2>Core notes</h2>
-      <div class="card-grid">
-        {coreNotes.map((n) => <NoteCard entry={n} />)}
-      </div>
+      <ul class="entry-list">
+        {coreNotes.map((n) => <li><EntryRow entry={n} /></li>)}
+      </ul>
     </section>
   )}
 
   {sortedGuides.length > 0 && (
     <section class="topic-section">
       <h2>Guides</h2>
-      <div class="card-grid">
-        {sortedGuides.map((g) => <GuideCard entry={g} />)}
-      </div>
+      <ul class="entry-list">
+        {sortedGuides.map((g) => <li><EntryRow entry={g} /></li>)}
+      </ul>
     </section>
   )}
 
   {recentWriting.length > 0 && (
     <section class="topic-section">
       <h2>Recent writing</h2>
-      <div class="card-grid">
-        {recentWriting.map((w) => <PostCard entry={w} />)}
-      </div>
+      <ul class="entry-list">
+        {recentWriting.map((w) => <li><EntryRow entry={w} /></li>)}
+      </ul>
     </section>
   )}
 
   {sortedProjects.length > 0 && (
     <section class="topic-section">
       <h2>Projects</h2>
-      <div class="card-grid">
-        {sortedProjects.map((p) => <ProjectCard entry={p} />)}
-      </div>
+      <ul class="entry-list">
+        {sortedProjects.map((p) => <li><EntryRow entry={p} /></li>)}
+      </ul>
     </section>
   )}
 
   {allNotes.length > 0 && (
     <section class="topic-section">
       <h2>All notes</h2>
-      <div class="card-grid">
-        {allNotes.map((n) => <NoteCard entry={n} />)}
-      </div>
+      <ul class="entry-list">
+        {allNotes.map((n) => <li><EntryRow entry={n} /></li>)}
+      </ul>
     </section>
   )}
 </BaseLayout>

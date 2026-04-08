@@ -513,15 +513,20 @@ main {
 .status-badge[data-status='shipped']     { color: oklch(50% 0.12 145); border-color: color-mix(in srgb, oklch(50% 0.12 145) 35%, transparent); }
 .status-badge[data-status='archived']    { color: var(--color-subtle); border-color: var(--color-border); }
 
-/* === Generic cards — editorial paper === */
+/* === Generic cards — editorial paper ===
+   Uses the "card link overlay" pattern: <article class="card"> wraps a
+   title link with a ::before pseudo that covers the whole card. Other
+   links inside (topic chips) sit above the overlay via z-index. This
+   keeps the card semantically valid (no nested <a>s) and the whole
+   surface clickable. */
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
   padding: 1.25rem 1.35rem 1.4rem;
   border: 1px solid var(--color-border);
   background: var(--color-card);
-  text-decoration: none;
   color: var(--color-text);
   transition: border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
               background 200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -530,7 +535,7 @@ main {
   border-color: var(--color-rule);
   background: var(--color-elevated);
 }
-.card h3 {
+.card-title {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.2rem;
@@ -538,12 +543,29 @@ main {
   letter-spacing: -0.018em;
   line-height: 1.18;
 }
+.card-link {
+  color: var(--color-text);
+  text-decoration: none;
+  transition: color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+}
+.card:hover .card-link {
+  color: var(--color-accent);
+}
 .card p {
   margin: 0;
   color: var(--color-muted);
   font-size: 0.95rem;
   font-family: var(--font-serif);
   line-height: 1.5;
+  position: relative;
+  z-index: 0;
 }
 .card .card-meta {
   display: flex;
@@ -555,6 +577,12 @@ main {
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+.card .topic-chips {
+  position: relative;
+  z-index: 1;
 }
 .card-list {
   display: grid;
@@ -562,6 +590,111 @@ main {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+/* === Entry list — editorial row pattern ===
+   Replaces card-grids on list pages, topic hubs, related sections,
+   and the homepage Recent/Selected sections. Just title + dim meta
+   + thin rule separators. Card containment is reserved for the
+   homepage Pinned and topic-link grid. */
+.entry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: var(--width-content);
+}
+.entry-list > li {
+  border-bottom: 1px solid var(--color-border);
+  padding: 1.75rem 0;
+}
+.entry-list > li:first-child {
+  padding-top: 0.5rem;
+}
+.entry-list > li:last-child {
+  border-bottom: none;
+}
+.entry-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.entry-row-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.5vw + 0.7rem, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+}
+.entry-row-title a {
+  color: var(--color-text);
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 250ms cubic-bezier(0.22, 1, 0.36, 1),
+              color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  padding-bottom: 1px;
+}
+.entry-row-title a:hover {
+  color: var(--color-accent);
+  background-size: 100% 1px;
+}
+.entry-row-desc {
+  margin: 0;
+  font-family: var(--font-serif);
+  color: var(--color-muted);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  max-width: 64ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.entry-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--color-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.15rem;
+}
+.entry-row-meta time,
+.entry-row-meta .entry-row-date {
+  color: var(--color-subtle);
+}
+.entry-row-maturity {
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.entry-row-maturity[data-level='seed']     { color: oklch(55% 0.13 70); }
+.entry-row-maturity[data-level='growing']  { color: oklch(50% 0.12 145); }
+.entry-row-maturity[data-level='stable']   { color: var(--color-accent); }
+.entry-row-maturity[data-level='archived'] { color: var(--color-subtle); }
+.entry-row-status[data-status='in-progress'] { color: oklch(55% 0.13 70); }
+.entry-row-status[data-status='shipped']     { color: oklch(50% 0.12 145); }
+.entry-row-status[data-status='archived']    { color: var(--color-subtle); }
+.entry-row-topics {
+  color: var(--color-muted);
+  text-transform: none;
+  font-family: var(--font-mono);
+  letter-spacing: 0;
+}
+.entry-row-topic {
+  color: var(--color-muted);
+}
+.entry-row-topic-sep {
+  margin: 0 0.35rem;
+  color: var(--color-subtle);
 }
 
 /* Related section */
@@ -791,8 +924,7 @@ main {
   width: 92vw;
 }
 #search-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(2px);
+  background: oklch(15% 0.015 60 / 0.55);
 }
 
 /* ============================================================
@@ -1071,27 +1203,27 @@ main {
 }
 
 /* ============================================================
-   Chip flattening — chips inside cards lose their border/bg
-   so the card surface stays calm (was: HIGH-7 visual nesting)
+   Chip flattening — chips inside cards are plain dim text labels.
+   No border, no background, no # prefix, no min-height. The card
+   itself is the tap target via the title-link overlay, so chips
+   inside don't need their own.
    ============================================================ */
 .card .topic-chip {
   background: transparent;
   border: none;
   padding: 0;
-  font-size: 0.78rem;
+  min-height: 0;
+  font-size: 0.74rem;
   color: var(--color-muted);
-}
-.card .topic-chip::before {
-  content: '#';
-  opacity: 0.55;
-  margin-right: 0.05em;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
 }
 .card .topic-chip:hover {
   color: var(--color-accent);
 }
 .card .topic-chips {
-  gap: 0.65rem;
-  margin-top: 0.1rem;
+  gap: 0.85rem;
+  margin-top: 0.15rem;
 }
 
 /* ============================================================

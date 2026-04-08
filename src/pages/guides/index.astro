@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import GuideCard from '../../components/GuideCard.astro';
+import EntryRow from '../../components/EntryRow.astro';
 import { published } from '../../lib/collections';
 
 const entries = published(await getCollection('guides'));
@@ -38,9 +38,11 @@ for (const list of groups.values()) {
       {[...groups.entries()].map(([category, items]) => (
         <section>
           <h2>{category}</h2>
-          <div class="card-grid">
-            {items.map((g) => <GuideCard entry={g} />)}
-          </div>
+          <ul class="entry-list">
+            {items.map((g) => (
+              <li><EntryRow entry={g} /></li>
+            ))}
+          </ul>
         </section>
       ))}
     </div>
