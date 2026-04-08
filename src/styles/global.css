@@ -1,7 +1,13 @@
 :root {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --content-max: 68ch;
+
+  /* Width tokens — used by sections, lists, and prose */
+  --width-text: 68ch;       /* article / prose */
+  --width-content: 72rem;   /* homepage and list pages */
+  --width-wide: 76rem;      /* guide grid (3-col) */
+  --content-max: var(--width-text); /* legacy alias */
+
   --color-bg: #fafafa;
   --color-text: #1a1a1a;
   --color-muted: #5a5a5a;
@@ -312,9 +318,8 @@ main {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr) 200px;
   gap: 2.5rem;
-  max-width: 1200px;
+  max-width: var(--width-wide);
   margin: 2rem auto;
-  padding: 0 1.25rem;
 }
 .guide-sidebar,
 .guide-toc {
@@ -421,4 +426,237 @@ main {
 #search-dialog::backdrop {
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(2px);
+}
+
+/* ============================================================
+   Section / page shell — added by /normalize
+   ============================================================ */
+
+/* Hero — homepage only */
+.home-hero {
+  margin: 1.5rem auto 3rem;
+  max-width: var(--width-content);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.home-hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw + 1rem, 3rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.home-tagline {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 1.1rem;
+}
+.home-intro {
+  margin: 0;
+  color: var(--color-text);
+  max-width: var(--width-text);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+/* Section spacing rhythm */
+.home-section {
+  margin: 3.5rem auto 0;
+  max-width: var(--width-content);
+}
+.home-section > h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.home-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.home-section-head h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.home-section-head a {
+  color: var(--color-muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+.home-section-head a:hover {
+  color: var(--color-text);
+}
+
+/* Bottom CTA strip */
+.home-cta {
+  margin: 4rem auto 0;
+  max-width: var(--width-content);
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+.home-cta a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* List page header — used by /writing, /notes, /guides, /projects, /topics */
+.list-header {
+  margin: 1rem auto 2.5rem;
+  max-width: var(--width-content);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.list-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.list-header p {
+  margin: 0;
+  color: var(--color-muted);
+  max-width: var(--width-text);
+}
+
+/* Topic hub page header */
+.topic-header {
+  margin: 1rem auto 2.5rem;
+  max-width: var(--width-content);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.topic-header h1 {
+  margin: 0;
+  font-size: clamp(1.85rem, 3vw + 1rem, 2.5rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.topic-description {
+  margin: 0;
+  color: var(--color-muted);
+  max-width: var(--width-text);
+}
+
+/* Eyebrow — small uppercase label above a title */
+.eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+.eyebrow a {
+  color: inherit;
+  text-decoration: none;
+}
+.eyebrow a:hover {
+  color: var(--color-text);
+}
+
+/* Topic hub aggregated section */
+.topic-section {
+  margin: 3rem auto 0;
+  max-width: var(--width-content);
+}
+.topic-section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Empty state messaging */
+.empty-state {
+  margin: 2rem auto;
+  max-width: var(--width-content);
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* Card grid — auto-fill responsive */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Topic grid — slightly tighter min */
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 0 auto;
+  max-width: var(--width-content);
+}
+.topic-grid-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.topic-count {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  padding-left: 0.1rem;
+}
+
+/* Guide / project index containers — vertical stacks with section dividers */
+.guide-index,
+.project-index {
+  margin: 0 auto;
+  max-width: var(--width-content);
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.guide-index > section h2,
+.project-index > section h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ============================================================
+   Chip flattening — chips inside cards lose their border/bg
+   so the card surface stays calm (was: HIGH-7 visual nesting)
+   ============================================================ */
+.card .topic-chip {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+.card .topic-chip::before {
+  content: '#';
+  opacity: 0.55;
+  margin-right: 0.05em;
+}
+.card .topic-chip:hover {
+  color: var(--color-accent);
+}
+.card .topic-chips {
+  gap: 0.65rem;
+  margin-top: 0.1rem;
 }

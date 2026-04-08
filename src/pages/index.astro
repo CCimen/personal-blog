@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EntryCard from '../components/EntryCard.astro';
 import PostCard from '../components/PostCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import TopicLinkCard from '../components/TopicLinkCard.astro';
-import { entryHref, byNewest, byPinnedOrder, getAllPublishedEntries } from '../lib/collections';
+import { byNewest, byPinnedOrder, getAllPublishedEntries } from '../lib/collections';
 import { TOPIC_SLUGS } from '../config/topics';
 
 const allPublished = await getAllPublishedEntries();
@@ -34,18 +35,12 @@ const selectedProjects = byNewest(projects.filter((e) => (e.data as any).feature
 
   {pinned.length > 0 && (
     <section class="home-section">
-      <h2>Pinned</h2>
-      <ul class="home-pinned">
-        {pinned.map((entry) => (
-          <li>
-            <a href={entryHref(entry)}>
-              <span class="home-pinned-kind">{entry.collection}</span>
-              <span class="home-pinned-title">{entry.data.title}</span>
-              <span class="home-pinned-desc">{entry.data.description}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="home-section-head">
+        <h2>Pinned</h2>
+      </div>
+      <div class="card-grid">
+        {pinned.map((entry) => <EntryCard entry={entry} />)}
+      </div>
     </section>
   )}
 

@@ -1,0 +1,25 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import PostCard from './PostCard.astro';
+import NoteCard from './NoteCard.astro';
+import GuideCard from './GuideCard.astro';
+import ProjectCard from './ProjectCard.astro';
+import type { AnyEntry } from '../lib/collections';
+
+interface Props {
+  entry: AnyEntry;
+}
+const { entry } = Astro.props;
+---
+{entry.collection === 'writing' && (
+  <PostCard entry={entry as CollectionEntry<'writing'>} />
+)}
+{entry.collection === 'notes' && (
+  <NoteCard entry={entry as CollectionEntry<'notes'>} />
+)}
+{entry.collection === 'guides' && (
+  <GuideCard entry={entry as CollectionEntry<'guides'>} />
+)}
+{entry.collection === 'projects' && (
+  <ProjectCard entry={entry as CollectionEntry<'projects'>} />
+)}
