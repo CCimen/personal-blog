@@ -65,56 +65,116 @@ main {
   padding: 2rem 1.25rem 4rem;
 }
 
-/* Site header */
+/* ============================================================
+   Site header — mobile-first
+   ============================================================ */
+
+/* Mobile shell: 3-column grid (brand | toggle | actions) so the
+   nav drawer can slot below as a 4th row. */
 .site-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
-  gap: 1.5rem;
-  padding: 1rem 1.25rem;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
   border-bottom: 1px solid var(--color-border);
   background: var(--color-bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 .site-header .brand {
   font-weight: 600;
   color: var(--color-text);
   text-decoration: none;
   font-size: 1.05rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
+
+/* Mobile hamburger toggle — hidden at desktop */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  color: var(--color-text);
+  cursor: pointer;
+  order: 3; /* sits with header-actions on the right */
+}
+.nav-toggle .nav-toggle-icon-close { display: none; }
+.site-header[data-nav-open="true"] .nav-toggle-icon-open { display: none; }
+.site-header[data-nav-open="true"] .nav-toggle-icon-close { display: inline; }
+
+/* Primary nav — mobile drawer (full width below the header bar) */
 .site-header .primary-nav {
+  display: none;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.5rem 0 0.25rem;
+  margin: 0.25rem -1.25rem 0;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+.site-header[data-nav-open="true"] .primary-nav {
   display: flex;
-  gap: 1.25rem;
-  flex: 1;
 }
 .site-header .primary-nav a {
-  color: var(--color-muted);
+  display: block;
+  padding: 0.95rem 1.25rem;
+  font-size: 1.05rem;
+  color: var(--color-text);
   text-decoration: none;
-  font-size: 0.95rem;
+  border-bottom: 1px solid var(--color-border);
+  min-height: 44px;
 }
-.site-header .primary-nav a:hover {
+.site-header .primary-nav a:last-child { border-bottom: none; }
+.site-header .primary-nav a[aria-current="page"] {
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  font-weight: 600;
   color: var(--color-text);
 }
+
+/* Header actions: search trigger + theme toggle */
 .site-header .header-actions {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 .site-header #search-trigger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
-  padding: 0.35rem 0.7rem;
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: 6px;
   color: var(--color-muted);
   font: inherit;
-  font-size: 0.85rem;
   cursor: pointer;
+  /* Mobile: square 44x44 icon button */
+  width: 44px;
+  height: 44px;
+  padding: 0;
 }
+.site-header #search-trigger .search-trigger-icon {
+  flex: 0 0 auto;
+}
+.site-header #search-trigger .search-trigger-label,
+.site-header #search-trigger kbd {
+  display: none; /* hidden on mobile, shown on desktop */
+}
+.site-header #search-trigger:hover { color: var(--color-text); }
 .site-header #search-trigger kbd {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  padding: 0.05em 0.35em;
+  padding: 0.1em 0.4em;
   border: 1px solid var(--color-border);
   border-radius: 3px;
 }
@@ -122,10 +182,61 @@ main {
   background: var(--color-card);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 0.35rem 0.55rem;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-text);
   cursor: pointer;
   font: inherit;
+  padding: 0;
+}
+
+/* Desktop (>=768px): inline header, no hamburger, full search trigger label */
+@media (min-width: 768px) {
+  .site-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem 1.25rem;
+    position: static;
+  }
+  .nav-toggle { display: none; }
+  .site-header .primary-nav {
+    display: flex !important;
+    flex-direction: row;
+    gap: 1.25rem;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+  }
+  .site-header .primary-nav a {
+    display: inline-block;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    border: none;
+    min-height: 0;
+    background: transparent;
+  }
+  .site-header .primary-nav a:hover { color: var(--color-text); }
+  .site-header .primary-nav a[aria-current="page"] {
+    background: transparent;
+    color: var(--color-text);
+  }
+  .site-header #search-trigger {
+    width: auto;
+    height: auto;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  .site-header #search-trigger .search-trigger-label,
+  .site-header #search-trigger kbd {
+    display: inline;
+  }
 }
 
 /* Site footer */
@@ -828,4 +939,107 @@ p, li, dt, dd, blockquote {
 #search-dialog input:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* ============================================================
+   /adapt — responsive + touch + fluid sizing
+   ============================================================ */
+
+/* Card grid: clamp the min so it never overflows on a 320px viewport.
+   `min(280px, 100%)` means cards can shrink below 280px when the
+   container is narrower than that. */
+.card-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+}
+.topic-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+}
+
+/* Fluid headings — replace fixed-size h1s with clamp() so they
+   shrink gracefully on narrow viewports. */
+.list-header h1 {
+  font-size: clamp(1.6rem, 4vw + 0.8rem, 2rem);
+}
+.article-header h1 {
+  font-size: clamp(1.6rem, 4vw + 0.8rem, 2.1rem);
+}
+.note-header h1 {
+  font-size: clamp(1.4rem, 3vw + 0.7rem, 1.6rem);
+}
+.project-header h1 {
+  font-size: clamp(1.6rem, 4vw + 0.8rem, 2rem);
+}
+
+/* Touch-friendly heading anchors:
+   On hover-capable devices, the # appears on hover.
+   On touch devices, show it permanently at low opacity so users can
+   discover and tap it. */
+@media (hover: none) and (pointer: coarse) {
+  .prose .heading-anchor {
+    opacity: 0.45;
+    padding: 0.4em 0.4em;
+    margin-left: 0.2em;
+  }
+  .prose .heading-anchor[data-copied] { opacity: 1; }
+}
+
+/* Touch-friendly copy-link button: ensure 44x44 hit area */
+.copy-link-button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Touch-friendly topic chips: ensure tap target inside cards */
+.card .topic-chip,
+.topic-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding-block: 0.35rem;
+}
+
+/* Tighten main padding on mobile — give content room to breathe */
+main {
+  padding: 1.25rem 1rem 3rem;
+}
+@media (min-width: 768px) {
+  main {
+    padding: 2rem 1.5rem 4rem;
+  }
+}
+
+/* Project header: stack chips and links wrap properly on mobile */
+.project-header .stack-chips,
+.project-header .project-links,
+.article-meta {
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
+}
+
+/* Footer: ensure it stacks cleanly on narrow viewports */
+.site-footer {
+  flex-direction: column;
+  align-items: flex-start;
+}
+@media (min-width: 640px) {
+  .site-footer {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Search dialog on small screens — full bleed feels better than a
+   tiny floating modal at 320px. */
+@media (max-width: 480px) {
+  #search-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin: 0;
+    inset: 0;
+  }
 }

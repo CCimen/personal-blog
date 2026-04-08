@@ -14,20 +14,104 @@ const navLinks = [
   { href: '/about/', label: 'About' },
 ] as const;
 ---
-<header class="site-header">
+<header class="site-header" data-nav-open="false">
   <a href="/" class="brand" aria-current={isActive('/') ? 'page' : undefined}>
     Çagri Cimen
   </a>
-  <nav class="primary-nav" aria-label="Primary">
+
+  <button
+    class="nav-toggle"
+    id="nav-toggle"
+    type="button"
+    aria-controls="primary-nav"
+    aria-expanded="false"
+    aria-label="Menu"
+  >
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+      <g class="nav-toggle-icon-open" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="4" y1="7" x2="20" y2="7" />
+        <line x1="4" y1="12" x2="20" y2="12" />
+        <line x1="4" y1="17" x2="20" y2="17" />
+      </g>
+      <g class="nav-toggle-icon-close" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="6" y1="6" x2="18" y2="18" />
+        <line x1="18" y1="6" x2="6" y2="18" />
+      </g>
+    </svg>
+  </button>
+
+  <nav class="primary-nav" id="primary-nav" aria-label="Primary">
     {navLinks.map(({ href, label }) => (
       <a href={href} aria-current={isActive(href) ? 'page' : undefined}>{label}</a>
     ))}
   </nav>
+
   <div class="header-actions">
     <button id="search-trigger" type="button" aria-label="Search the site (Cmd+K)">
-      <span>Search</span>
+      <svg
+        class="search-trigger-icon"
+        viewBox="0 0 24 24"
+        width="16"
+        height="16"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="11" cy="11" r="7" />
+        <line x1="20" y1="20" x2="16.65" y2="16.65" />
+      </svg>
+      <span class="search-trigger-label">Search</span>
       <kbd aria-hidden="true">⌘K</kbd>
     </button>
     <ThemeToggle />
   </div>
 </header>
+
+<script is:inline>
+  (function () {
+    var header = document.querySelector('.site-header');
+    if (!header) return;
+    var toggle = header.querySelector('#nav-toggle');
+    if (!toggle) return;
+    var nav = header.querySelector('#primary-nav');
+
+    function setOpen(open) {
+      header.dataset.navOpen = open ? 'true' : 'false';
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      // Lock body scroll when the menu is open on mobile
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
+    toggle.addEventListener('click', function () {
+      var open = header.dataset.navOpen !== 'true';
+      setOpen(open);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && header.dataset.navOpen === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Close after tapping any nav link
+    if (nav) {
+      nav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { setOpen(false); });
+      });
+    }
+
+    // Close if the viewport grows past the breakpoint
+    var mq = window.matchMedia('(min-width: 768px)');
+    if (mq && mq.addEventListener) {
+      mq.addEventListener('change', function (e) {
+        if (e.matches && header.dataset.navOpen === 'true') setOpen(false);
+      });
+    }
+  })();
+</script>
